@@ -71,4 +71,26 @@ class TestTruncatedFinitePadicExpansion < Minitest::Test
     assert_equal prime2, h.replace_prime(prime2).prime
     assert_equal rational, h.to_r
   end
+
+  def test_replace_hensel_code
+    prime = 257
+    exponent = 3
+    rat = @rationals.sample
+    h = HenselCode::TruncatedFinitePadicExpansion.new prime, exponent, rat
+    existing_hensel_code = h.hensel_code
+    new_hensel_code = rand(0..h.hensel_code - 1)
+
+    assert_equal existing_hensel_code, h.hensel_code
+    assert_equal new_hensel_code, h.replace_hensel_code(new_hensel_code).hensel_code
+  end
+
+  def test_inspect
+    prime = random_prime(9)
+    exponent = 3
+    rational = @rationals.sample
+    h = HenselCode::TruncatedFinitePadicExpansion.new prime, exponent, rational
+    expected = "[HenselCode: #{h.hensel_code}, prime: #{h.prime}, exponent: #{h.exponent}, modulus: #{h.modulus}]"
+
+    assert_equal expected, h.inspect
+  end
 end

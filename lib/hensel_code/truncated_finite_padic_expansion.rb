@@ -7,6 +7,7 @@ module HenselCode
     include TFPEVerifier
 
     attr_accessor :prime, :exponent, :rational, :hensel_code, :n
+    private :prime=, :exponent=, :rational=, :hensel_code=
 
     def initialize(prime, exponent, number)
       @prime = prime
@@ -63,6 +64,13 @@ module HenselCode
       self
     end
 
+    def replace_hensel_code(new_hensel_code)
+      self.hensel_code = new_hensel_code
+      decode
+      encode
+      self
+    end
+
     def +(other)
       valid?(other)
       self.class.new prime, exponent, (hensel_code + other.hensel_code) % modulus
@@ -82,6 +90,10 @@ module HenselCode
       valid?(other)
       h2_hensel_code_inverse = mod_inverse(other.hensel_code, modulus)
       self.class.new prime, exponent, (hensel_code * h2_hensel_code_inverse) % modulus
+    end
+
+    def inspect
+      "[HenselCode: #{hensel_code}, prime: #{prime}, exponent: #{exponent}, modulus: #{modulus}]"
     end
 
     private
