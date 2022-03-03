@@ -10,7 +10,7 @@ class TestTFPEArithmetic < Minitest::Test
     @exponent = 3
     @exponent2 = @exponent + 1
     @n = Integer.sqrt(((@prime**@exponent) - 1) / 2)
-    @rationals = (@n+1..@n+99).map { |h| HenselCode::TruncatedFinitePadicExpansion.new(@prime, 1, h).to_r }
+    @rationals = (@n + 1..@n + 99).map { |h| HenselCode::TruncatedFinitePadicExpansion.new(@prime, 1, h).to_r }
     @rat1, @rat2 = Array.new(2) { @rationals.sample }
   end
 
