@@ -2,9 +2,7 @@
 
 ![example workflow](https://github.com/davidwilliam/hensel_code/actions/workflows/main.yml/badge.svg) [![codecov](https://codecov.io/gh/davidwilliam/hensel_code/branch/main/graph/badge.svg?token=XJ0C0U7P2M)](https://codecov.io/gh/davidwilliam/hensel_code) [![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop) ![GitHub](https://img.shields.io/github/license/davidwilliam/hensel_code)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/hensel_code`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Hensel Code allows you to homomorphically encode rational numbers as integers using the finite-segment p-adic arithmetic, also known as Hensel codes. 
 
 ## Installation
 
@@ -34,7 +32,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/hensel_code.
+Bug reports and pull requests are welcome on GitHub at https://github.com/davidwilliam/hensel_code.
 
 ## License
 
