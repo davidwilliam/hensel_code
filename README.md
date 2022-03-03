@@ -32,7 +32,7 @@ Or install it yourself as:
 
 Let `p=257` and `r=3`. Given two rational numbers `rat1 = Rational(3,5)` and `rat2 = Rational(4,3)`, we encode `rat1` and `rat2` as follows:
 
-```irb
+```ruby
 h1 = HenselCode::TruncatedFinitePadicExpansion.new(p, r, rat1)
 # => [HenselCode: 13579675, prime: 257, exponent: 3, modulus: 16974593]
 h2 = HenselCode::TruncatedFinitePadicExpansion.new(p, r, rat1)
@@ -49,7 +49,7 @@ puts h2
 
 Now we can carry arithmetic computations on the `h1` and `h2` objects as if we were computing over `rat1` and `rat2`:
 
-```irb
+```ruby
 h1_plus_h2 = h1 + h2
 h1_minus_h2 = h1 - h2
 h1_times_h2 = h1 * h2
@@ -60,7 +60,7 @@ All the computations are reduced modulo `p^r`.
 
 At any moment, we can check the rational representation of the results we produced:
 
-```irb
+```ruby
 h1_plus_h2.to_r
 # => (29/15)
 h1_minus_h2.to_r
@@ -73,7 +73,7 @@ h1_div_h2.to_r
 
 And we can verify that
 
-```irb
+```ruby
 rat1 + rat2
 # => (29/15)
 rat1 - rat2
@@ -86,7 +86,7 @@ rat1 * rat2
 
 In order to operate on two or more Hensel codes, they all must be of the same object type and have the same prime and exponent, otherwise HenselCode will raise an exception. Again, let `rat1 = Rational(3,5)` and `rat2 = Rational(4,3)`, and `p1 = 241`, `p2 = 251`, `r1 = 3`, and `r2 = 4`:
 
-```irb
+```ruby
 h1 = HenselCode::TruncatedFinitePadicExpansion.new(p1, r1, rat1)
 # => [HenselCode: 5599009, prime: 241, exponent: 3, modulus: 13997521]
 h2 = HenselCode::TruncatedFinitePadicExpansion.new(p1, r2, rat1)
@@ -99,7 +99,7 @@ h4 = HenselCode::TruncatedFinitePadicExpansion.new(p2, r2, rat1)
 
 The following operations will raise exceptions:
 
-```irb
+```ruby
 h1 + h2
 # => 5599009 has exponent 3 while 1349361025 has exponent 4 (HenselCode::HenselCodesWithDifferentExponents)
 h1 + h3
@@ -115,14 +115,14 @@ h1 + num
 
 Let `p = 541`, `r = 3`, `rat = Rational(11,5)`. We create a Hensel code as before:
 
-```irb
+```ruby
 h = HenselCode::TruncatedFinitePadicExpansion.new p, r, rat
 # => [HenselCode: 126672339, prime: 541, exponent: 3, modulus: 158340421]
 ```
 
 We can change the prime and the exponent:
 
-```irb
+```ruby
 p = 1223
 r = 4
 h.replace_prime(p)
@@ -133,14 +133,14 @@ h.replace_exponent(r)
 
 Any change in the prime and/or the exponent of a Hensel code object will change the Hensel code value and the modulus as well, however, the Hensel code object continues to refer to represent the same rational number:
 
-```irb
+```ruby
 h.to_r
 # => (11/5)
 ```
 
 We can also change the rational number:
 
-```irb
+```ruby
 rat = Rational(13,7)
 h.replace_rational(rat)
 # => [HenselCode: 1278402995111, prime: 1223, exponent: 4, modulus: 2237205241441]
@@ -150,20 +150,20 @@ h.to_r
 
 We can initiate a Hensel code object with its Hensel code value, instead of a rational number:
 
-```irb
+```ruby
 h = HenselCode::TruncatedFinitePadicExpansion.new p, r, 53673296543
 ```
 
 and then we can check what is the rational number represented by the resulting object:
 
-```irb
+```ruby
 h.to_r
 # => (706147/633690)
 ```
 
 We can update the Hensel code value of an existing Hensel code object:
 
-```irb
+```ruby
 h.replace_hensel_code(38769823656)
 # => (-685859/94809)
 ```
