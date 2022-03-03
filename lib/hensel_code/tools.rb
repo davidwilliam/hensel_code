@@ -58,17 +58,6 @@ module HenselCode
       [x0, y0, i, x1, y1]
     end
 
-    # def eea_loop(x0_, x1_, y0_, y1_, z0_, z1_, index, bound)
-    #   while x1_ > bound
-    #     q = x0_ / x1_
-    #     x0_, x1_ = x1_, x0_ - (q * x1_)
-    #     y0_, y1_ = y1_, y0_ - (q * y1_)
-    #     z0_, z1_ = z1_, z0_ - (q * z1_)
-    #     index += 1
-    #   end
-    #   [x0_, y0_, z0_, index, x1_, y1_, z1_]
-    # end
-
     def extended_gcd(num1, num2)
       if num1.negative?
         x, y = extended_gcd(-num1, num2)
