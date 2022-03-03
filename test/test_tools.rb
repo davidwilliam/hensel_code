@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 
 class TestTools < Minitest::Test
@@ -24,26 +26,26 @@ class TestTools < Minitest::Test
   end
 
   def test_eea_core
-    assert_equal [1, 1, -1, 3, 0, -22, 23], eea_core(23,22)
-    assert_equal [9, 1, 0, 3, 0, -8, 1], eea_core(9,72)
-    assert_equal [2, -1, 1, 4, 0, 20, -19], eea_core(38,40)
-    assert_equal [1, 14, -11, 7, 0, -257, 202], eea_core(202,257)
+    assert_equal [1, 1, 3, 0, -22], eea_core(23, 22)
+    assert_equal [9, 1, 3, 0, -8], eea_core(9, 72)
+    assert_equal [2, -1, 4, 0, 20], eea_core(38, 40)
+    assert_equal [1, 14, 7, 0, -257], eea_core(202, 257)
   end
 
   def test_extended_gcd
-    assert_equal [1, 1, -1], extended_gcd(23,22)
-    assert_equal [1, -5, -7], extended_gcd(18,-13)
-    assert_equal [1, -10, 9], extended_gcd(-19,-21)
-    assert_equal [1, 1, 1], extended_gcd(-12,13)
-    assert_equal [9, 1, 0], extended_gcd(9,72)
-    assert_equal [2, -1, 1], extended_gcd(38,40)
+    assert_equal [1, 1], extended_gcd(23, 22)
+    assert_equal [1, -5], extended_gcd(18, -13)
+    assert_equal [1, -10], extended_gcd(-19, -21)
+    assert_equal [1, 1], extended_gcd(-12, 13)
+    assert_equal [9, 1], extended_gcd(9, 72)
+    assert_equal [2, -1], extended_gcd(38, 40)
   end
 
   def test_mod_inverse
     expected_error_message = "4 has no inverse modulo 256"
 
-    assert_equal 86, mod_inverse(3,257)
-    assert_equal 185, mod_inverse(-25,257)
-    assert_raises(ZeroDivisionError, expected_error_message) { mod_inverse(4,256) }
+    assert_equal 86, mod_inverse(3, 257)
+    assert_equal 185, mod_inverse(-25, 257)
+    assert_raises(ZeroDivisionError, expected_error_message) { mod_inverse(4, 256) }
   end
 end

@@ -1,8 +1,10 @@
-module HenselCode
-  module Tools
+# frozen_string_literal: true
 
+module HenselCode
+  # Required basics of number generation and modular
+  module Tools
     def random_integer(bits)
-      OpenSSL::BN::rand(bits).to_i
+      OpenSSL::BN.rand(bits).to_i
     end
 
     def random_rational(bits)
@@ -20,63 +22,71 @@ module HenselCode
       # which means there are 3512 primes under 16 bits in length
       # Therefore for allowing values for the parameter 'bits' between 2 and 15,
       # we generate all primes from 2 to 15 bits using Ruby's Prime library
-      # and select only those with bit length equal to the value of 'bits' 
+      # and select only those with bit length equal to the value of 'bits'
       # so we sample one element
       # We only do this if the value of 'bits' is less than 16, otherwise we
       # use OpenSSL to generate the prime
       if bits >= 2 && bits < 16
         primes = Prime.first(3512)
-        primes.select{|p| p.bit_length == bits}.sample
+        primes.select { |p| p.bit_length == bits }.sample
       elsif bits >= 16
-        OpenSSL::BN::generate_prime(bits).to_i
+        OpenSSL::BN.generate_prime(bits).to_i
       else
-        raise BadBitRangeForRandomPrime.new("The bit length must be greater than or equal to 2")
+        raise BadBitRangeForRandomPrime, "The bit length must be greater than or equal to 2"
       end
     end
 
     def random_distinct_primes(quantity, bits)
       primes = [random_prime(bits)]
-      while primes.size < 2
+      while primes.size < quantity
         prime = random_prime(bits)
         primes << prime if prime != primes.last
       end
       primes
     end
 
-    def eea_core(a, b, bound = 0)
-      setup = bound == 0 ? [1, 0, 0, 1] : [0, 1, 1, 0]
-      x0, x1, y0, y1, z0, z1 = [a, b] + setup
+    def eea_core(num1, num2, bound = 0)
+      setup = bound.zero? ? [1, 0] : [0, 1]
+      x0, x1, y0, y1 = [num1, num2] + setup
       i = 1
-        while x1 > bound
-          q = x0 / x1
-          x0, x1 = x1, x0 - q*x1
-          y0, y1 = y1, y0 - q*y1
-          z0, z1 = z1, z0 - q*z1
-          i += 1
-        end
-        [x0, y0, z0, i, x1, y1, z1]
+      while x1 > bound
+        q = x0 / x1
+        x0, x1 = x1, x0 - (q * x1)
+        y0, y1 = y1, y0 - (q * y1)
+        i += 1
+      end
+      [x0, y0, i, x1, y1]
     end
 
-    def extended_gcd(a, b)
-      if a< 0
-        x, y, z = extended_gcd(-a, b)
-        [x, -y, z]
-      elsif b < 0
-        x, y, z = extended_gcd(a, -b)
-        [x, y, -z]
+    # def eea_loop(x0_, x1_, y0_, y1_, z0_, z1_, index, bound)
+    #   while x1_ > bound
+    #     q = x0_ / x1_
+    #     x0_, x1_ = x1_, x0_ - (q * x1_)
+    #     y0_, y1_ = y1_, y0_ - (q * y1_)
+    #     z0_, z1_ = z1_, z0_ - (q * z1_)
+    #     index += 1
+    #   end
+    #   [x0_, y0_, z0_, index, x1_, y1_, z1_]
+    # end
+
+    def extended_gcd(num1, num2)
+      if num1.negative?
+        x, y = extended_gcd(-num1, num2)
+        [x, -y]
+      elsif num2.negative?
+        x, y = extended_gcd(num1, -num2)
+        [x, y]
       else
-        x, y, z = eea_core(a, b)
-        [x, y, z]
+        x, y = eea_core(num1, num2)
+        [x, y]
       end
     end
 
     def mod_inverse(num, mod)
-      x, y, _ = extended_gcd(num, mod)
-      unless x == 1
-        raise ZeroDivisionError.new("#{num} has no inverse modulo #{mod}")
-      end
+      x, y, = extended_gcd(num, mod)
+      raise ZeroDivisionError, "#{num} has no inverse modulo #{mod}" unless x == 1
+
       y % mod
     end
-
   end
 end
