@@ -19,4 +19,4 @@ gem "minitest-reporters", "~> 1.5"
 
 gem "prime", "~> 0.1.2"
 
-gem 'codecov', :require => false, :group => :test
+gem "codecov", require: false, group: :test
