@@ -22,7 +22,7 @@ module HenselCode
     end
 
     def inspect
-      "[HenselCode: #{hensel_code}, prime: #{prime}, exponent: #{exponent}, modulus: #{modulus}]"
+      "[HenselCode: #{polynomial_form}, prime: #{prime}, exponent: #{exponent}, modulus: #{modulus}]"
     end
 
     private
@@ -36,6 +36,10 @@ module HenselCode
     def polynomial_variable(index)
       i = index > 1 ? 2 : index
       ["", "p", "p^#{index}"][i]
+    end
+
+    def polynomial_form
+      to_s
     end
 
     def valid_number?(number)

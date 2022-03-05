@@ -99,9 +99,10 @@ class TestFinitePadicExpansion < Minitest::Test
   def test_inspect
     prime = random_prime(9)
     exponent = 3
-    rational = @rationals.sample
+    rational = Rational(2, 3)
     h = HenselCode::FinitePadicExpansion.new prime, exponent, rational
-    expected = "[HenselCode: #{h.hensel_code}, prime: #{h.prime}, exponent: #{h.exponent}, modulus: #{h.modulus}]"
+    h_polynomial = h.send(:polynomial_form)
+    expected = "[HenselCode: #{h_polynomial}, prime: #{h.prime}, exponent: #{h.exponent}, modulus: #{h.modulus}]"
 
     assert_equal expected, h.inspect
   end
