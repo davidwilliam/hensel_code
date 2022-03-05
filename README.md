@@ -4,6 +4,10 @@
 
 Hensel Code allows you to homomorphically encode rational numbers as integers using the finite-segment p-adic arithmetic, also known as Hensel codes. 
 
+T. M. Rao describes the use of finite-segment p-adic arithmetic as a practical method for performing error-free computation and the term *Hensel code* as the first `r` digits of the infinite p-adic expansion of a rational number `x/y`. The use of Hensel codes allows us to replace the arithmetic opertations on rational numbers by corresponding aritmetic operation over the integers under certain conditions.
+
+Rao also remarks that the theory of Hensel codes, although lifted from the p-adic number theory, can be introduced without the need of a complete undertanding of the theoretical aspects of p-adic numbers if the goal is to work with Hensel codes alone. This is due to the fact that the finite-segment p-adic arithmetic is well-defined, self-contained, and it has immediate pratical applications in a wide range of real-world scenarios.
+
 ## Mathematical Background
 
 In our Wiki, you can find a brief [introduction to the mathematical background on Hensel codes](https://github.com/davidwilliam/hensel_code/wiki/Mathematical-Background). We will continue to update that area as we update the gem.
@@ -28,7 +32,14 @@ Or install it yourself as:
 
     $ gem install hensel_code
 
-## Usage
+# Usage
+
+There are several types of Hensel codes. There are currently two of the available in the gem HenselCode: 
+
+1. Truncated finite-segment p-adic Hensel codes (added in v0.1.0)
+2. Finite-segment p-adic Hensel codes (added in v0.2.0)
+
+## Truncated finite-segment p-adic Hensel codes
 
 Let `p=257` and `r=3`. Given two rational numbers `rat1 = Rational(3,5)` and `rat2 = Rational(4,3)`, we encode `rat1` and `rat2` as follows:
 
@@ -187,7 +198,7 @@ h2 = HenselCode::TruncatedFinitePadicExpansion.new(p1, r2, rat1)
 h3 = HenselCode::TruncatedFinitePadicExpansion.new(p2, r1, rat1)
 # => [HenselCode: 6325301, prime: 251, exponent: 3, modulus: 15813251]
 h4 = HenselCode::TruncatedFinitePadicExpansion.new(p2, r2, rat1)
-=> [HenselCode: 1587650401, prime: 251, exponent: 4, modulus: 3969126001]
+# => [HenselCode: 1587650401, prime: 251, exponent: 4, modulus: 3969126001]
 ```
 
 The following operations will raise exceptions:
@@ -259,6 +270,110 @@ We can update the Hensel code value of an existing Hensel code object:
 ```ruby
 h.replace_hensel_code(38769823656)
 # => (-685859/94809)
+```
+
+## Finite-segment p-adic Hensel codes
+
+The truncated finite-segment p-adic Hensel codes can be described as a polynomial truncated to its leading coefficient/monomial in non-standard form (increasing degree order). The finite-segment p-adic Hensel codes are expressed with a polynomial of degree `r-1`.
+
+Let `p = 359`, `r = 3`, and `rat = Rational(2,3)`:
+
+```ruby
+h1 = HenselCode::FinitePadicExpansion.new p, r, rat
+# => [HenselCode: 240 + 119p + 239p^2, prime: 359, exponent: 3, modulus: 359]
+puts h1
+# => 240 + 119p + 239p^2
+```
+
+We say that `h` is a p-adic number with `r` digits. We clearly see the correspondence of p-adic digits if we compute a truncated Hensel code with the same `p` but `r=1`:
+
+```ruby
+h2 = HenselCode::TruncatedFinitePadicExpansion.new p, r, rat
+# => [HenselCode: 240, prime: 359, exponent: 1, modulus: 359]
+```
+
+Notice that the truncated Hensel code `h2` equals the first digit of the finite-segment Hensel code `h1`, which is also the same of computing
+
+```ruby
+HenselCode::FinitePadicExpansion.new p, 1, rat
+# => [HenselCode: 240, prime: 359, exponent: 1, modulus: 359]
+```
+
+The following expressions are equivalent:
+
+```ruby
+r = 3
+h1 = HenselCode::FinitePadicExpansion.new p, r, rat
+# => [HenselCode: 240 + 119p + 239p^2, prime: 359, exponent: 3, modulus: 359]
+h1.to_r
+# => (2/3)
+h2 = HenselCode::TruncatedFinitePadicExpansion.new p, r, rat
+# => [HenselCode: 30845520, prime: 359, exponent: 3, modulus: 46268279]
+h2.to_r
+# => (2/3)
+```
+
+that is, they not only represent the same rational but also `30845520` is just the evaluation of the polynomial `240 + 119p + 239p^2`.
+
+We can obtain just the coefficients of `h1` as follows:
+
+```ruby
+h1.to_a
+# => => [240, 119, 239]
+```
+
+We can obtain the truncated version of `h1` as follows:
+
+```ruby
+h1.to_truncated
+# => [HenselCode: 30845520, prime: 359, exponent: 3, modulus: 46268279]
+h1.to_truncated.class
+# => HenselCode::TruncatedFinitePadicExpansion
+```
+
+#### Arithmetic
+
+Let `p = 409`, `r = 5`, `rat1 = Rational(2,3)` and `rat2 = Rational(11,7)` such that
+
+```ruby
+h1 = HenselCode::FinitePadicExpansion.new p, r, rat1
+# => [HenselCode: 137 + 136p + 136p^2 + 136p^3 + 136p^4, prime: 409, exponent: 5, modulus: 409]
+h2 = HenselCode::FinitePadicExpansion.new p, r, rat2
+# => [HenselCode: 60 + 292p + 233p^2 + 350p^3 + 116p^4, prime: 409, exponent: 5, modulus: 409]
+```
+
+We compute addition, subtraction, multiplication, and division as follows:
+
+```ruby
+h1_plus_h2 =h1 + h2
+# => [HenselCode: 197 + 19p + 370p^2 + 77p^3 + 253p^4, prime: 409, exponent: 5, modulus: 409]
+h1_minus_h2 = h1 - h2
+# => [HenselCode: 77 + 253p + 311p^2 + 194p^3 + 19p^4, prime: 409, exponent: 5, modulus: 409]
+h1_times_h2 = h1 * h2
+# => [HenselCode: 40 + 331p + 155p^2 + 97p^3 + 214p^4, prime: 409, exponent: 5, modulus: 409]
+h1_div_h2 = h1 / h2
+# => [HenselCode: 50 + 161p + 12p^2 + 347p^3 + 309p^4, prime: 409, exponent: 5, modulus: 409]
+```
+
+And we can verify that
+
+```ruby
+h1_plus_h2.to_r
+# => (47/21)
+rat1 + rat2
+# => (47/21)
+rat1 - rat2
+# => (-19/21)
+h1_minus_h2.to_r
+# => (-19/21)
+h1_times_h2.to_r
+# => (22/21)
+rat1 * rat2
+# => (22/21)
+h1_div_h2.to_r
+# => (14/33)
+rat1 / rat2
+# => (14/33)
 ```
 
 ### Class Alias
