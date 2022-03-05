@@ -13,6 +13,7 @@ module HenselCode
   class HenselCodesWithDifferentPrimesAndExponents < StandardError; end
   class HenselCodesWithDifferentExponents < StandardError; end
   class IncompatibleOperandTypes < StandardError; end
+  class NonInitializableClass < StandardError; end
 
   autoload  :Tools, "hensel_code/tools"
   autoload  :PAdicBase, "hensel_code/padic_base"

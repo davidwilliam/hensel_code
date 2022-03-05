@@ -10,6 +10,7 @@ module HenselCode
     private :prime=, :exponent=, :rational=, :hensel_code=
 
     def initialize(prime, exponent, number)
+      can_initilize?
       @prime = prime
       @exponent = exponent
       @n = Integer.sqrt(((prime**exponent) - 1) / 2)
@@ -68,6 +69,11 @@ module HenselCode
     end
 
     private
+
+    def can_initilize?
+      message = "#{self.class} can only be inherited."
+      raise NonInitializableClass if self.class == HenselCode::PAdicBase
+    end
 
     def replace_attribute(attribute, new_value, order)
       send(attribute, new_value)
