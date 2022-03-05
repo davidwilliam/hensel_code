@@ -2,37 +2,9 @@
 
 module HenselCode
   # truncated finite p-adic expansion hensel code class
-  class TruncatedFinitePadicExpansion
-    include Tools
-    include TFPEVerifier
-
-    attr_accessor :prime, :exponent, :rational, :hensel_code, :n
-    private :prime=, :exponent=, :rational=, :hensel_code=
-
-    def initialize(prime, exponent, number)
-      @prime = prime
-      @exponent = exponent
-      @n = Integer.sqrt((modulus - 1) / 2)
-
-      valid_number?(number)
-      encode
-    end
-
+  class TruncatedFinitePadicExpansion < PAdicBase
     def modulus
       prime**exponent
-    end
-
-    def numerator
-      rational.numerator
-    end
-
-    def denominator
-      rational.denominator
-    end
-
-    def to_r
-      decode
-      rational
     end
 
     def to_i
@@ -43,60 +15,22 @@ module HenselCode
       hensel_code.to_s
     end
 
-    def replace_prime(new_prime)
-      self.prime = new_prime
-      encode
-      decode
-      self
-    end
-
-    def replace_exponent(new_exponent)
-      self.exponent = new_exponent
-      encode
-      decode
-      self
-    end
-
-    def replace_rational(new_rational)
-      self.rational = new_rational
-      encode
-      decode
-      self
-    end
-
-    def replace_hensel_code(new_hensel_code)
-      self.hensel_code = new_hensel_code
-      decode
-      encode
-      self
-    end
-
-    def +(other)
-      valid?(other)
-      self.class.new prime, exponent, (hensel_code + other.hensel_code) % modulus
-    end
-
-    def -(other)
-      valid?(other)
-      self.class.new prime, exponent, (hensel_code - other.hensel_code) % modulus
-    end
-
-    def *(other)
-      valid?(other)
-      self.class.new prime, exponent, (hensel_code * other.hensel_code) % modulus
-    end
-
-    def /(other)
-      valid?(other)
-      h2_hensel_code_inverse = mod_inverse(other.hensel_code, modulus)
-      self.class.new prime, exponent, (hensel_code * h2_hensel_code_inverse) % modulus
-    end
-
     def inspect
       "[HenselCode: #{hensel_code}, prime: #{prime}, exponent: #{exponent}, modulus: #{modulus}]"
     end
 
     private
+
+    def evaluate(operation, other)
+      if operation == "/"
+        other_hensel_code = mod_inverse(other.hensel_code, modulus)
+        op = "*"
+      else
+        other_hensel_code = other.hensel_code
+        op = operation
+      end
+      self.class.new prime, exponent, hensel_code.send(op, other_hensel_code) % modulus
+    end
 
     def valid_number?(number)
       case number
@@ -109,6 +43,11 @@ module HenselCode
         raise WrongHenselCodeInputType, "number must be a Rational or an\
                                         Integer object and it was a #{number.class}"
       end
+    end
+
+    def valid_hensel_code?(new_hensel_code)
+      message = "must be an integer up to #{modulus - 1}"
+      raise WrongHenselCodeInputType, message unless new_hensel_code < modulus
     end
 
     def encode

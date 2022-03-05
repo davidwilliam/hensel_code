@@ -2,7 +2,7 @@
 
 module HenselCode
   # verifications pre-evaluation of hensel codes
-  module TFPEVerifier
+  module PAdicVerifier
     def valid?(other)
       incompatible_operand_type?(other)
       different_prime_and_same_exponent?(other)
