@@ -36,6 +36,15 @@ module HenselCode
       end
     end
 
+    def random_distinct_integers(quantity, bits)
+      integers = [random_integer(bits)]
+      while integers.size < quantity
+        integer = random_integer(bits)
+        integers << integer if integer != integers.last
+      end
+      integers
+    end
+
     def random_distinct_primes(quantity, bits)
       primes = [random_prime(bits)]
       while primes.size < quantity
@@ -76,6 +85,62 @@ module HenselCode
       raise ZeroDivisionError, "#{num} has no inverse modulo #{mod}" unless x == 1
 
       y % mod
+    end
+
+    def modular_cauchy_product(prime, coefficients1, coefficients2)
+      sum_of_coefficients_sizes = coefficients1.size + coefficients2.size
+      res, res_, carry, row = multiplication_setup
+      coefficients1.product(coefficients2).each_with_index do |x,i|
+        res += [0] * (coefficients1.size - 1 - row) if (i % coefficients1.size) == 0
+        carry, result = mul_carry(prime, carry, x[0], x[1])
+        res_ << result
+        if (i % coefficients1.size) == (coefficients1.size - 1)
+          res_, res, carry, row = multiplication_checkpoint(res_, res, carry, row)
+        end
+      end
+      carry = 0
+      new_coefficients = []
+      res.reverse.each_slice(sum_of_coefficients_sizes).to_a.transpose.each do |x| 
+        new_coefficients << ((carry + x.reduce(:+)) % prime)
+        carry = (carry + x.reduce(:+)) / prime
+      end
+      new_coefficients[0..coefficients1.size - 1]
+    end
+
+    def cauchy_product(prime, coefficients1, coefficients2)
+      product = []
+      carry = 0
+      (0..coefficients1.size - 1).each do |i|
+        sum = 0
+        carry_ = 0
+        (0..i).each do |j|
+          sum += (coefficients1[j] * coefficients2[i - j])
+        end
+        product << (carry + sum) % prime
+        carry = (carry + sum) / prime
+      end
+      product
+    end
+
+    private
+
+    def multiplication_setup
+      [[], [], 0, 0]
+    end
+
+    def multiplication_checkpoint(res_, res, carry, row)
+      res_ << carry
+      res_.reverse!
+      res += res_
+      res_ = []
+      carry = 0
+      res += [0] * row
+      row += 1
+      [res_, res, carry, row]
+    end
+
+    def mul_carry(prime, carry, op1, op2)
+      [(carry + op1 * op2) / prime, (carry + op1 * op2) % prime]
     end
   end
 end

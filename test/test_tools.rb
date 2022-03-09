@@ -48,4 +48,38 @@ class TestTools < Minitest::Test
     assert_equal 185, mod_inverse(-25, 257)
     assert_raises(ZeroDivisionError, expected_error_message) { mod_inverse(4, 256) }
   end
+
+  def test_coefficient_product_three_coefficients
+    prime = 257
+    coefficients1 = [172, 85, 171]
+    coefficients2 = [52, 154, 205]
+
+    assert_equal [206, 102, 51], modular_cauchy_product(prime, coefficients1, coefficients2)
+  end
+
+  def test_cauchy_product_three_coefficients
+    prime = 257
+    coefficients1 = [172, 85, 171]
+    coefficients2 = [52, 154, 205]
+
+    assert_equal [206, 102, 51], cauchy_product(prime, coefficients1, coefficients2)
+  end
+
+  def test_coefficient_product_five_coefficients
+    prime = 257
+    coefficients1 = [87, 171, 85, 171, 85]
+    coefficients2 = [194, 192, 192, 192, 192]
+    expected_coefficients = [173, 85, 171, 85, 171]
+
+    assert_equal expected_coefficients, modular_cauchy_product(prime, coefficients1, coefficients2)
+  end
+
+  def test_cauchy_product_five_coefficients
+    prime = 257
+    coefficients1 = [87, 171, 85, 171, 85]
+    coefficients2 = [194, 192, 192, 192, 192]
+    expected_coefficients = [173, 85, 171, 85, 171]
+
+    assert_equal expected_coefficients, cauchy_product(prime, coefficients1, coefficients2)
+  end
 end
