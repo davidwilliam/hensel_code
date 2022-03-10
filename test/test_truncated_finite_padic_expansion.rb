@@ -61,7 +61,7 @@ class TestTruncatedFinitePadicExpansion < Minitest::Test
   end
 
   def test_replace_prime
-    prime1, prime2 = random_distinct_primes(2, 9)
+    prime1, prime2 = random_distinct_numbers("prime", 2, 9)
     exponent = 3
     rational = @rationals.sample
     h = HenselCode::TruncatedFinitePadicExpansion.new prime1, exponent, rational

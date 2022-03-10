@@ -72,7 +72,7 @@ module HenselCode
 
     def can_initilize?
       message = "#{self.class} can only be inherited."
-      raise NonInitializableClass if self.class == HenselCode::PAdicBase
+      raise NonInitializableClass, message if instance_of?(HenselCode::PAdicBase)
     end
 
     def replace_attribute(attribute, new_value, order)

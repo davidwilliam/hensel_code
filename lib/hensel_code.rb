@@ -19,6 +19,7 @@ module HenselCode
   autoload  :PAdicBase, "hensel_code/padic_base"
   autoload  :Polynomial, "hensel_code/polynomial"
   autoload  :PAdicVerifier, "hensel_code/padic_verifier"
+  autoload  :ModularArithmetic, "hensel_code/modular_arithmetic"
   autoload  :FinitePadicExpansion, "hensel_code/finite_padic_expansion"
   autoload  :TruncatedFinitePadicExpansion, "hensel_code/truncated_finite_padic_expansion"
 

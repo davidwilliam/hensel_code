@@ -12,7 +12,7 @@ class TestPAdicBase < Minitest::Test
     @n = Integer.sqrt(((@prime**@exponent) - 1) / 2)
     x = 0
     y = 1
-    @rationals = (1..100).map{|i| Rational(x+i, y+i) }
+    @rationals = (1..100).map { |i| Rational(x + i, y + i) }
     @rat1, @rat2 = Array.new(2) { @rationals.sample }
   end
 

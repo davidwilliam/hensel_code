@@ -41,7 +41,7 @@ class TestTFPEArithmetic < Minitest::Test
   end
 
   def test_operation_of_hensel_codes_with_different_primes_same_exponent
-    prime1, prime2 = random_distinct_primes(2, 16)
+    prime1, prime2 = random_distinct_numbers("prime", 2, 16)
     exponent = 2
     rat1, rat2 = Array.new(2) { @rationals.sample }
     h1 = HenselCode::TruncatedFinitePadicExpansion.new prime1, exponent, rat1
@@ -68,7 +68,7 @@ class TestTFPEArithmetic < Minitest::Test
   end
 
   def test_operation_of_hensel_codes_with_different_primes_different_exponents
-    prime1, prime2 = random_distinct_primes(2, 9)
+    prime1, prime2 = random_distinct_numbers("prime", 2, 9)
     h1, h2 = [[prime1, @exponent, @rat1], [prime2, @exponent2, @rat2]].map do |er|
       HenselCode::TFPE.new er[0], er[1], er[2]
     end
