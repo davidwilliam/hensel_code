@@ -47,5 +47,10 @@ module HenselCode
       new_coefficients = multiplication(prime, coefficients, other.coefficients)
       self.class.new prime, new_coefficients
     end
+
+    def div(other)
+      new_coefficients = division(prime, coefficients,  other.coefficients)
+      self.class.new prime, new_coefficients
+    end
   end
 end

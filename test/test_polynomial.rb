@@ -107,4 +107,16 @@ class TestPolynomial < Minitest::Test
     assert_equal expected_expanded_coefficients, f1.mul(f2).coefficients
     assert_equal expected_polynomial_coefficients, (f1 * f2).coefficients
   end
+
+  def test_division
+    prime = 257
+    coefficients1 = [172, 85, 171]
+    coefficients2 = [205, 154, 52]
+    # [56, 170, 253]
+
+    f1 = HenselCode::Polynomial.new prime, coefficients1
+    f2 = HenselCode::Polynomial.new prime, coefficients2
+
+    puts "f1.div(f2) = #{f1.div(f2).coefficients}"
+  end
 end

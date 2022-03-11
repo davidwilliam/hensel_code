@@ -25,6 +25,26 @@ module HenselCode
       sum_of_partial_multiplications(partial_multiplications)
     end
 
+    def division(prime, coefficients1, coefficients2)
+      g = coefficients2   
+      q, n = [], coefficients1.dup
+      puts "n = #{n}"
+      puts "g = #{g}"
+      # while n.length >= g.length
+        # q << Float(n[0]) / g[0]
+        q << (n[0] * mod_inverse(g[0], prime)) % prime
+        n.reverse.zip(g.reverse).each_with_index do |pair, i|
+          n[i] = (pair[0] - q[0] * pair[1]) % prime
+        end
+        # n.shift
+      # end
+      q = [0] if q.empty?
+      n = [0] if n.empty?
+      [q, n]
+    end
+
+    # [[229], [0, 28, 86]]
+
     private
 
     def multiplication_inner_loop(prime, coefficients1, coefficients2, c1_, index)
