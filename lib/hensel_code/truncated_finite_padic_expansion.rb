@@ -19,6 +19,11 @@ module HenselCode
       "[HenselCode: #{hensel_code}, prime: #{prime}, exponent: #{exponent}, modulus: #{modulus}]"
     end
 
+    def inverse
+      new_hensel_code = mod_inverse(hensel_code, modulus)
+      self.class.new prime, exponent, new_hensel_code
+    end
+
     private
 
     def evaluate(operation, other)

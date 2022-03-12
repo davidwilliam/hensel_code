@@ -18,13 +18,19 @@ class TestFinitePadicExpansion < Minitest::Test
   def test_create_hensel_code
     rational = @rationals.sample
     h = HenselCode::FinitePadicExpansion.new @prime, @exponent, rational
+    properties = [@prime, @exponent, @n]
 
     assert_equal HenselCode::FinitePadicExpansion, h.class
-    assert_equal @prime, h.prime
-    assert_equal @exponent, h.exponent
-    assert_equal @n, h.n
-    assert_equal Array, h.hensel_code.class
-    assert_equal Array, h.to_a.class
+    assert_equal properties, [h.prime, h.exponent, h.n]
+    assert_equal [Array], [h.hensel_code.class, h.to_a.class].uniq
+  end
+
+  def test_hensel_polynomial
+    rational = @rationals.sample
+    h = HenselCode::FinitePadicExpansion.new @prime, @exponent, rational
+
+    assert_equal HenselCode::Polynomial, h.polynomial.class
+    assert_equal h.hensel_code, h.polynomial.coefficients
   end
 
   def test_encode_decode
@@ -105,5 +111,20 @@ class TestFinitePadicExpansion < Minitest::Test
     expected = "[HenselCode: #{h_polynomial}, prime: #{h.prime}, exponent: #{h.exponent}, modulus: #{h.modulus}]"
 
     assert_equal expected, h.inspect
+  end
+
+  def test_inverse
+    h = HenselCode::FinitePadicExpansion.new @prime, @exponent, @rat1
+
+    assert_equal h.to_r**(-1), h.inverse.to_r
+    assert_equal 1, (h * h.inverse).to_r
+  end
+
+  def test_rational_to_padic_digits
+    rational = Rational(2,3)
+    h = HenselCode::FinitePadicExpansion.new 5, 5, rational
+    expected_digits = [4, 1, 3, 1, 3]
+
+    assert_equal expected_digits, h.send(:rational_to_padic_digits)
   end
 end

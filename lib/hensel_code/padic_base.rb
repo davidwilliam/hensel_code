@@ -16,6 +16,7 @@ module HenselCode
       @n = Integer.sqrt(((prime**exponent) - 1) / 2)
       valid_number?(number)
       encode
+      decode
     end
 
     def numerator

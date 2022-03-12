@@ -93,4 +93,12 @@ class TestTruncatedFinitePadicExpansion < Minitest::Test
 
     assert_equal expected, h.inspect
   end
+
+  def test_inverse
+    rational = Rational(2,3)
+    h = HenselCode::TruncatedFinitePadicExpansion.new @prime, @exponent, rational
+
+    assert_equal rational**(-1), h.inverse.to_r
+    assert_equal 1, (h * h.inverse).to_r
+  end
 end

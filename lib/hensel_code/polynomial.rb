@@ -15,12 +15,12 @@ module HenselCode
     end
 
     def +(other)
-      new_coefficients = [coefficients, other.coefficients].transpose.map { |x| x.reduce(:+) % prime } if fixed_length
+      new_coefficients = addition(prime, coefficients, other.coefficients)
       self.class.new prime, new_coefficients
     end
 
     def -(other)
-      new_coefficients = [coefficients, other.coefficients].transpose.map { |x| x.reduce(:-) % prime } if fixed_length
+      new_coefficients = subtraction(prime, coefficients, other.coefficients)
       self.class.new prime, new_coefficients
     end
 
@@ -30,26 +30,30 @@ module HenselCode
     end
 
     def /(other)
-      if fixed_length
-        new_coefficients = [coefficients, other.coefficients].transpose.map do |x|
-          (x[0] * mod_inverse(x[1], prime)) % prime
-        end
-      end
-      self.class.new prime, new_coefficients
+      new_coefficients = (self * other.inverse).coefficients
+      self.class.new prime, new_coefficients[0..coefficients.size - 1]
     end
 
     def inverse
-      new_coefficients = polynomial_inverse(prime, coefficients)
-      self.class.new prime, new_coefficients
+      x = generate_padic_x
+      two = generate_padic_constant_integer(2)
+      x = (two * x) - (self * x * x) while (x * self).coefficients != [1] + Array.new(coefficients.size - 1, 0)
+      x
+    end
+
+    private
+
+    def generate_padic_x
+      x_coefficients = [mod_inverse(coefficients[0], prime)] + Array.new(coefficients.size - 1) { rand(0..prime - 1) }
+      self.class.new prime, x_coefficients
+    end
+
+    def generate_padic_constant_integer(number)
+      self.class.new prime, [number] + Array.new(coefficients.size - 1, 0)
     end
 
     def mul(other)
       new_coefficients = multiplication(prime, coefficients, other.coefficients)
-      self.class.new prime, new_coefficients
-    end
-
-    def div(other)
-      new_coefficients = division(prime, coefficients,  other.coefficients)
       self.class.new prime, new_coefficients
     end
   end

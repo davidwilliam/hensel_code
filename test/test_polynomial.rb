@@ -34,26 +34,38 @@ class TestPolynomial < Minitest::Test
     f1 = HenselCode::Polynomial.new @prime, coefficients1
     f2 = HenselCode::Polynomial.new @prime, coefficients2
 
-    expected_sum = [coefficients1, coefficients2].transpose.map { |x| x.reduce(:+) % @prime }
+    h1 = HenselCode::FinitePadicExpansion.new @prime, @exponent, coefficients1
+    h2 = HenselCode::FinitePadicExpansion.new @prime, @exponent, coefficients2
+
+    expected_sum = HenselCode::FinitePadicExpansion.new(@prime, @exponent, (h1.to_r + h2.to_r)).hensel_code
 
     assert_equal expected_sum, (f1 + f2).coefficients
   end
 
+  def test_negation
+    prime = 5
+    coefficients = [0, 1, 4, 0, 4, 0, 4, 0, 4]
+
+    assert_equal [0, 4, 0, 4, 0, 4, 0, 4, 0], negation(prime, coefficients)
+  end
+
   def test_subtraction
-    coefficients1 = random_distinct_numbers("integer", @exponent, 8)
-    coefficients2 = random_distinct_numbers("integer", @exponent, 8)
+    prime = 5
 
-    f1 = HenselCode::Polynomial.new @prime, coefficients1
-    f2 = HenselCode::Polynomial.new @prime, coefficients2
+    coefficients1 = [4, 1, 3, 1, 3, 1, 3, 1, 3]
+    coefficients2 = [0, 1, 4, 0, 4, 0, 4, 0, 4]
 
-    expected_subtraction = [coefficients1, coefficients2].transpose.map { |x| x.reduce(:-) % @prime }
+    f1 = HenselCode::Polynomial.new prime, coefficients1
+    f2 = HenselCode::Polynomial.new prime, coefficients2
+
+    expected_subtraction = [4, 0, 4, 0, 4, 0, 4, 0, 4]
 
     assert_equal expected_subtraction, (f1 - f2).coefficients
   end
 
   def test_multiplication
-    coefficients1 = random_distinct_numbers("integer", @exponent, 8)
-    coefficients2 = random_distinct_numbers("integer", @exponent, 8)
+    coefficients1 = [231, 202, 84]
+    coefficients2 = [103, 99, 232]
 
     h1 = HenselCode::FinitePadicExpansion.new @prime, @exponent, coefficients1
     h2 = HenselCode::FinitePadicExpansion.new @prime, @exponent, coefficients2
@@ -82,17 +94,6 @@ class TestPolynomial < Minitest::Test
     assert_equal expected_coefficients, cauchy_product(prime, coefficients1, coefficients2)
   end
 
-  def test_polynomial_multiplication_inverse
-    prime = 11
-    coefficients1 = [8, 3, 7]
-    coefficients2 = [7, 5, 5]
-
-    f1 = HenselCode::Polynomial.new prime, coefficients1
-    f1_inv = HenselCode::Polynomial.new prime, coefficients2
-
-    assert_equal [1, 0, 0], (f1 * f1_inv).coefficients
-  end
-
   def test_modular_multiplication
     prime = 257
     coefficients1 = [171, 85, 172]
@@ -104,19 +105,30 @@ class TestPolynomial < Minitest::Test
     expected_expanded_coefficients = [103, 205, 101, 34, 70, 35]
     expected_polynomial_coefficients = [103, 205, 101]
 
-    assert_equal expected_expanded_coefficients, f1.mul(f2).coefficients
+    assert_equal expected_expanded_coefficients, f1.send(:mul, f2).coefficients
     assert_equal expected_polynomial_coefficients, (f1 * f2).coefficients
   end
 
+  def test_inverse
+    prime = 5
+    r = 7
+    h1 = HenselCode::FinitePadicExpansion.new prime, r, Rational(2, 3)
+    h1_inv = HenselCode::FinitePadicExpansion.new prime, r, Rational(3, 2)
+
+    f1 = HenselCode::Polynomial.new prime, h1.hensel_code
+    f1_inv = HenselCode::Polynomial.new prime, h1_inv.hensel_code
+
+    assert_equal f1_inv.coefficients, f1.inverse.coefficients
+  end
+
   def test_division
-    prime = 257
-    coefficients1 = [172, 85, 171]
-    coefficients2 = [205, 154, 52]
-    # [56, 170, 253]
+    h1 = HenselCode::FinitePadicExpansion.new @prime, @exponent, Rational(2, 3)
+    h2 = HenselCode::FinitePadicExpansion.new @prime, @exponent, Rational(1, 12)
+    h1_div_h2 = HenselCode::FinitePadicExpansion.new @prime, @exponent, Rational(2, 3) / Rational(1, 12)
 
-    f1 = HenselCode::Polynomial.new prime, coefficients1
-    f2 = HenselCode::Polynomial.new prime, coefficients2
+    f1 = HenselCode::Polynomial.new @prime, h1.hensel_code
+    f2 = HenselCode::Polynomial.new @prime, h2.hensel_code
 
-    puts "f1.div(f2) = #{f1.div(f2).coefficients}"
+    assert_equal h1_div_h2.hensel_code, (f1 / f2).coefficients
   end
 end

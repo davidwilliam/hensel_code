@@ -25,26 +25,6 @@ module HenselCode
       sum_of_partial_multiplications(partial_multiplications)
     end
 
-    def division(prime, coefficients1, coefficients2)
-      g = coefficients2   
-      q, n = [], coefficients1.dup
-      puts "n = #{n}"
-      puts "g = #{g}"
-      # while n.length >= g.length
-        # q << Float(n[0]) / g[0]
-        q << (n[0] * mod_inverse(g[0], prime)) % prime
-        n.reverse.zip(g.reverse).each_with_index do |pair, i|
-          n[i] = (pair[0] - q[0] * pair[1]) % prime
-        end
-        # n.shift
-      # end
-      q = [0] if q.empty?
-      n = [0] if n.empty?
-      [q, n]
-    end
-
-    # [[229], [0, 28, 86]]
-
     private
 
     def multiplication_inner_loop(prime, coefficients1, coefficients2, c1_, index)
@@ -66,6 +46,30 @@ module HenselCode
         carry = (carry + x.reduce(:+)) / prime
       end
       sum
+    end
+
+    def addition(prime, coefficients1, coefficients2)
+      carry = 0
+      result_coefficients = []
+      coefficients1.zip(coefficients2).each do |x|
+        result_coefficients << ((carry + x.reduce(:+)) % prime)
+        carry = (carry + x.reduce(:+)) / prime
+      end
+      result_coefficients
+    end
+
+    def subtraction(prime,  coefficients1, coefficients2)
+      addition(prime, coefficients1, negation(prime, coefficients2))
+    end
+
+    def negation(prime, coefficients)
+      leading_zeros = coefficients.take_while(&:zero?)
+      coefficients_without_leading_zeros = coefficients.drop_while(&:zero?)
+      new_coefficients = [(prime - coefficients_without_leading_zeros[0]) % prime]
+      new_coefficients += coefficients[leading_zeros.size + 1..].map do |c|
+        ((prime - 1) - c) % prime
+      end
+      leading_zeros + new_coefficients
     end
   end
 end

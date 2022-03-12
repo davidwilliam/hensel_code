@@ -3,6 +3,8 @@
 module HenselCode
   # finite p-adic expansion hensel code class
   class FinitePadicExpansion < PAdicBase
+    attr_accessor :polynomial
+
     def modulus
       prime
     end
@@ -25,11 +27,15 @@ module HenselCode
       "[HenselCode: #{polynomial_form}, prime: #{prime}, exponent: #{exponent}, modulus: #{modulus}]"
     end
 
+    def inverse
+      new_hensel_code = polynomial.inverse.coefficients
+      self.class.new prime, exponent, new_hensel_code
+    end
+
     private
 
     def evaluate(operation, other)
-      h_ = to_truncated.send(operation, other.to_truncated).hensel_code
-      new_hensel_code = (0..exponent - 1).map { |i| h_ / (prime**i) % prime }
+      new_hensel_code = polynomial.send(operation, other.polynomial).coefficients
       self.class.new prime, exponent, new_hensel_code
     end
 
@@ -67,13 +73,31 @@ module HenselCode
 
     def encode
       h_ = TruncatedFinitePadicExpansion.new(prime, exponent, rational).hensel_code
-      @hensel_code = (0..exponent - 1).map { |i| h_ / (prime**i) % prime }
+      @hensel_code = rational_to_padic_digits
+      @polynomial = Polynomial.new prime, hensel_code
     end
 
     def decode
       number = 0
       hensel_code.each_with_index { |d, i| number += d * (prime**i) }
       @rational = TruncatedFinitePadicExpansion.new(prime, exponent, number).to_r
+    end
+
+    def rational_to_padic_digits
+      digits = [numerator * mod_inverse(denominator,prime) % prime]
+      alpha = rational - digits.last
+      (exponent - 1).times do
+        divisor_numerator = alpha.numerator.gcd(prime)
+        divisor_denominator = alpha.denominator.gcd(prime)
+        if divisor_numerator != 1
+          alpha = alpha / divisor_numerator
+        elsif divisor_denominator != 1
+          alpha = alpha * divisor_numerator
+        end
+        digits << (alpha.numerator * mod_inverse(alpha.denominator, prime)) % prime
+        alpha -= digits.last
+      end
+      digits
     end
   end
 end

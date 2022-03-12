@@ -31,11 +31,12 @@ class TestFPEArithmetic < Minitest::Test
   def test_valid_operation_evaluation
     rat1 = Rational(2, 3)
     rat2 = Rational(3, 5)
-    h1 = HenselCode::FinitePadicExpansion.new @prime, @exponent, rat1
-    h2 = HenselCode::FinitePadicExpansion.new @prime, @exponent, rat2
+    h1 = HenselCode::FinitePadicExpansion.new @prime, 7, rat1
+    h2 = HenselCode::FinitePadicExpansion.new @prime, 7, rat2
 
     ["+", "-", "*", "/"].each do |operation|
       h3 = h1.send(operation, h2)
+      # puts "operation = #{operation}"
 
       assert_equal rat1.send(operation, rat2), h3.to_r
     end
