@@ -78,6 +78,12 @@ module HenselCode
       y % mod
     end
 
+    def crt(mods, remainders)
+      max = mods.inject( :* )
+      series = remainders.zip(mods).map{ |r,m| (r * max * mod_inverse(max/m, m) / m) }
+      series.inject( :+ ) % max
+    end
+
     private
 
     def polynomial_variable(index)

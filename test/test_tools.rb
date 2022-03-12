@@ -48,4 +48,15 @@ class TestTools < Minitest::Test
     assert_equal 185, mod_inverse(-25, 257)
     assert_raises(ZeroDivisionError, expected_error_message) { mod_inverse(4, 256) }
   end
+
+  def test_crt
+    moduli_one = [231, 251, 257]
+    remainders_one = [199, 222, 121]
+
+    moduli_two = [367, 331, 389, 433, 479, 449]
+    remainders_two = [188, 234, 27, 214, 205, 183]
+
+    assert_equal 9024676, crt(moduli_one, remainders_one)
+    assert_equal 800155308225567, crt(moduli_two, remainders_two)
+  end
 end
