@@ -12,24 +12,29 @@ module HenselCode
       @prime = prime
       @coefficients = coefficients
       @fixed_length = fixed_length
+      valid_arguments?
     end
 
     def +(other)
+      valid_operands?(other)
       new_coefficients = addition(prime, coefficients, other.coefficients)
       self.class.new prime, new_coefficients
     end
 
     def -(other)
+      valid_operands?(other)
       new_coefficients = subtraction(prime, coefficients, other.coefficients)
       self.class.new prime, new_coefficients
     end
 
     def *(other)
+      valid_operands?(other)
       new_coefficients = multiplication(prime, coefficients, other.coefficients)
       self.class.new prime, new_coefficients[0..coefficients.size - 1]
     end
 
     def /(other)
+      valid_operands?(other)
       new_coefficients = (self * other.inverse).coefficients
       self.class.new prime, new_coefficients[0..coefficients.size - 1]
     end
@@ -41,7 +46,37 @@ module HenselCode
       x
     end
 
+    def to_s
+      coefficients.map.with_index do |c, i|
+        "#{c}#{polynomial_variable(i)}"
+      end.join(" + ")
+    end
+
+    def inspect
+      "<Polynomial: #{polynomial_form}>"
+    end
+
+    def degree
+      coefficients.size - 1
+    end
+
     private
+
+    def valid_arguments?
+      coefficients_condition = @coefficients.is_a?(Array) && @coefficients.map(&:class).uniq == [Integer]
+      raise ArgumentError, "prime can't be nil" if @prime.nil?
+      raise ArgumentError, "coefficients can't be nil" if @coefficients.nil?
+      raise ArgumentError, "prime must be an integer" unless @prime.is_a?(Integer)
+      raise ArgumentError, "coefficients must be an array" unless @coefficients.is_a?(Array)
+      raise ArgumentError, "coefficients must be an array" unless coefficients_condition
+    end
+
+    def valid_operands?(other)
+      s1 = coefficients.size
+      s2 = other.coefficients.size
+      raise WrongHenselCodeInputType, "polynomials must have same degree" if s1 != s2
+      raise WrongHenselCodeInputType, "polynomials must have same prime" if prime != other.prime
+    end
 
     def generate_padic_x
       x_coefficients = [mod_inverse(coefficients[0], prime)] + Array.new(coefficients.size - 1) { rand(0..prime - 1) }
@@ -55,6 +90,10 @@ module HenselCode
     def mul(other)
       new_coefficients = multiplication(prime, coefficients, other.coefficients)
       self.class.new prime, new_coefficients
+    end
+
+    def polynomial_form
+      to_s
     end
   end
 end

@@ -77,5 +77,12 @@ module HenselCode
 
       y % mod
     end
+
+    private
+
+    def polynomial_variable(index)
+      i = index > 1 ? 2 : index
+      ["", "p", "p^#{index}"][i]
+    end
   end
 end

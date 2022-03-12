@@ -34,18 +34,13 @@ module HenselCode
 
     private
 
+    def polynomial_form
+      to_s
+    end
+
     def evaluate(operation, other)
       new_hensel_code = polynomial.send(operation, other.polynomial).coefficients
       self.class.new prime, exponent, new_hensel_code
-    end
-
-    def polynomial_variable(index)
-      i = index > 1 ? 2 : index
-      ["", "p", "p^#{index}"][i]
-    end
-
-    def polynomial_form
-      to_s
     end
 
     def valid_number?(number)
