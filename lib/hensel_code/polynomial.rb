@@ -12,7 +12,8 @@ module HenselCode
       @prime = prime
       @coefficients = coefficients
       @fixed_length = fixed_length
-      valid_arguments?
+      valid_prime?
+      valid_coefficients?
     end
 
     def +(other)
@@ -62,11 +63,14 @@ module HenselCode
 
     private
 
-    def valid_arguments?
-      coefficients_condition = @coefficients.is_a?(Array) && @coefficients.map(&:class).uniq == [Integer]
+    def valid_prime?
       raise ArgumentError, "prime can't be nil" if @prime.nil?
-      raise ArgumentError, "coefficients can't be nil" if @coefficients.nil?
       raise ArgumentError, "prime must be an integer" unless @prime.is_a?(Integer)
+    end
+
+    def valid_coefficients?
+      coefficients_condition = @coefficients.is_a?(Array) && @coefficients.map(&:class).uniq == [Integer]
+      raise ArgumentError, "coefficients can't be nil" if @coefficients.nil?
       raise ArgumentError, "coefficients must be an array" unless @coefficients.is_a?(Array)
       raise ArgumentError, "coefficients must be an array" unless coefficients_condition
     end
