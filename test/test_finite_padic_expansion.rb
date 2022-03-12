@@ -11,7 +11,7 @@ class TestFinitePadicExpansion < Minitest::Test
     @n = Integer.sqrt(((@prime**@exponent) - 1) / 2)
     # Below, TruncatedFinitePadicExpansion is used instead of FinitePadicExpansion
     # because the only goals is to generate rational numbers fom single integers
-    @rationals = (0..@prime / 2).map { |h| HenselCode::TruncatedFinitePadicExpansion.new(@prime, @exponent, h).to_r }
+    @rationals = (@n + 1..@n + 99).map { |h| HenselCode::TruncatedFinitePadicExpansion.new(@prime, 1, h).to_r }
     @rat1, @rat2 = Array.new(2) { @rationals.sample }
   end
 
@@ -57,51 +57,6 @@ class TestFinitePadicExpansion < Minitest::Test
     assert_equal expected_string2, h2.to_s
   end
 
-  def test_replace_exponent
-    prime = 257
-    exponent = 3
-    rational = @rationals.sample
-    h = HenselCode::FinitePadicExpansion.new prime, exponent, rational
-
-    assert_equal rational, h.to_r
-    assert_equal rational, h.replace_exponent(exponent + 2).to_r
-  end
-
-  def test_replace_rational
-    prime = 257
-    exponent = 3
-    rat1, rat2 = Array.new(2) { @rationals.sample }
-    h = HenselCode::FinitePadicExpansion.new prime, exponent, rat1
-
-    assert_equal rat1, h.to_r
-    assert_equal rat2, h.replace_rational(rat2).to_r
-  end
-
-  def test_replace_prime
-    prime1, prime2 = random_distinct_numbers("prime", 2, 9)
-    exponent = 3
-    rational = @rationals.sample
-    h = HenselCode::FinitePadicExpansion.new prime1, exponent, rational
-
-    assert_equal prime1, h.prime
-    assert_equal rational, h.to_r
-    assert_equal prime2, h.replace_prime(prime2).prime
-    assert_equal rational, h.to_r
-  end
-
-  def test_replace_hensel_code
-    prime = 257
-    exponent = 3
-    rat = @rationals.sample
-    h = HenselCode::FinitePadicExpansion.new prime, exponent, rat
-    replacement = [14, 253, 178, 124]
-    message = "must be an array of integers of size #{exponent}"
-
-    assert_equal replacement[0..2], h.replace_hensel_code(replacement[0..2]).hensel_code
-    assert_raises(HenselCode::WHIT, message) { h.replace_hensel_code(replacement[0..1]) }
-    assert_raises(HenselCode::WHIT, message) { h.replace_hensel_code(replacement) }
-  end
-
   def test_inspect
     prime = random_prime(9)
     exponent = 3
@@ -116,15 +71,36 @@ class TestFinitePadicExpansion < Minitest::Test
   def test_inverse
     h = HenselCode::FinitePadicExpansion.new @prime, @exponent, @rat1
 
-    assert_equal h.to_r**(-1), h.inverse.to_r
+    assert_equal h.to_r**-1, h.inverse.to_r
     assert_equal 1, (h * h.inverse).to_r
   end
 
   def test_rational_to_padic_digits
-    rational = Rational(2,3)
+    rational = Rational(2, 3)
     h = HenselCode::FinitePadicExpansion.new 5, 5, rational
     expected_digits = [4, 1, 3, 1, 3]
 
     assert_equal expected_digits, h.send(:rational_to_padic_digits)
+  end
+
+  def test_reduce_rational_in_terms_of_prime
+    prime = 5
+    rat1 = Rational(2, 15)
+    rat2 = Rational(-10, 3)
+    rat3 = Rational(4, 3)
+    h = HenselCode::FinitePadicExpansion.new prime, 5, rat3
+
+    assert_equal Rational(2, 3), h.send(:reduce_rational_in_terms_of_prime, rat1)
+    assert_equal Rational(-2, 3), h.send(:reduce_rational_in_terms_of_prime, rat2)
+    assert_equal rat3, h.send(:reduce_rational_in_terms_of_prime, rat3)
+  end
+
+  def test_rational_to_integer
+    h1 = HenselCode::FinitePadicExpansion.new @prime, @exponent, @rat1
+    expected_integer_one = (@rat1.numerator * h1.mod_inverse(@rat1.denominator, @prime)) % @prime
+    expected_integer_two = (@rat2.numerator * h1.mod_inverse(@rat2.denominator, @prime)) % @prime
+
+    assert_equal expected_integer_one, h1.send(:rational_to_integer, @rat1)
+    assert_equal expected_integer_two, h1.send(:rational_to_integer, @rat2)
   end
 end

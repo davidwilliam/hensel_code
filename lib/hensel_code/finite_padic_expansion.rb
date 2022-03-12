@@ -72,7 +72,6 @@ module HenselCode
     end
 
     def encode
-      h_ = TruncatedFinitePadicExpansion.new(prime, exponent, rational).hensel_code
       @hensel_code = rational_to_padic_digits
       @polynomial = Polynomial.new prime, hensel_code
     end
@@ -84,20 +83,29 @@ module HenselCode
     end
 
     def rational_to_padic_digits
-      digits = [numerator * mod_inverse(denominator,prime) % prime]
+      digits = [rational_to_integer(rational)]
       alpha = rational - digits.last
       (exponent - 1).times do
-        divisor_numerator = alpha.numerator.gcd(prime)
-        divisor_denominator = alpha.denominator.gcd(prime)
-        if divisor_numerator != 1
-          alpha = alpha / divisor_numerator
-        elsif divisor_denominator != 1
-          alpha = alpha * divisor_numerator
-        end
-        digits << (alpha.numerator * mod_inverse(alpha.denominator, prime)) % prime
+        alpha = reduce_rational_in_terms_of_prime(alpha)
+        digits << rational_to_integer(alpha)
         alpha -= digits.last
       end
       digits
+    end
+
+    def reduce_rational_in_terms_of_prime(alpha)
+      divisor_numerator = alpha.numerator.gcd(prime)
+      divisor_denominator = alpha.denominator.gcd(prime)
+      if divisor_numerator != 1
+        alpha /= divisor_numerator
+      elsif divisor_denominator != 1
+        alpha *= divisor_denominator
+      end
+      alpha
+    end
+
+    def rational_to_integer(rat)
+      (rat.numerator * mod_inverse(rat.denominator, prime)) % prime
     end
   end
 end
