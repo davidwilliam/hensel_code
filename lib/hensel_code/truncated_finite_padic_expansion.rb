@@ -16,7 +16,7 @@ module HenselCode
     end
 
     def inspect
-      "[HenselCode: #{hensel_code}, prime: #{prime}, exponent: #{exponent}, modulus: #{modulus}]"
+      "<HenselCode: #{hensel_code}>"
     end
 
     def inverse

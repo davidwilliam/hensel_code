@@ -89,7 +89,7 @@ class TestTruncatedFinitePadicExpansion < Minitest::Test
     exponent = 3
     rational = @rationals.sample
     h = HenselCode::TruncatedFinitePadicExpansion.new prime, exponent, rational
-    expected = "[HenselCode: #{h.hensel_code}, prime: #{h.prime}, exponent: #{h.exponent}, modulus: #{h.modulus}]"
+    expected = "<HenselCode: #{h.hensel_code}>"
 
     assert_equal expected, h.inspect
   end
