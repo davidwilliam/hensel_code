@@ -24,7 +24,7 @@ module HenselCode
     end
 
     def inspect
-      "[HenselCode: #{polynomial_form}, prime: #{prime}, exponent: #{exponent}, modulus: #{modulus}]"
+      "<HenselCode: #{polynomial_form}>"
     end
 
     def inverse

@@ -63,7 +63,7 @@ class TestFinitePadicExpansion < Minitest::Test
     rational = Rational(2, 3)
     h = HenselCode::FinitePadicExpansion.new prime, exponent, rational
     h_polynomial = h.send(:polynomial_form)
-    expected = "[HenselCode: #{h_polynomial}, prime: #{h.prime}, exponent: #{h.exponent}, modulus: #{h.modulus}]"
+    expected = "<HenselCode: #{h_polynomial}>"
 
     assert_equal expected, h.inspect
   end
