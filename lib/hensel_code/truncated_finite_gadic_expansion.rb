@@ -12,7 +12,7 @@ module HenselCode
     end
 
     def to_s
-      "#{hensel_code.map(&:to_s)}>"
+      "#{hensel_code.map(&:to_i)}"
     end
 
     def inspect
