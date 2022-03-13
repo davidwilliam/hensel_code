@@ -17,11 +17,14 @@ module HenselCode
 
   autoload  :Tools, "hensel_code/tools"
   autoload  :PAdicBase, "hensel_code/padic_base"
+  autoload  :GAdicBase, "hensel_code/gadic_base"
   autoload  :Polynomial, "hensel_code/polynomial"
   autoload  :PAdicVerifier, "hensel_code/padic_verifier"
+  autoload  :GAdicVerifier, "hensel_code/gadic_verifier"
   autoload  :ModularArithmetic, "hensel_code/modular_arithmetic"
   autoload  :FinitePadicExpansion, "hensel_code/finite_padic_expansion"
   autoload  :TruncatedFinitePadicExpansion, "hensel_code/truncated_finite_padic_expansion"
+  autoload  :TruncatedFiniteGadicExpansion, "hensel_code/truncated_finite_gadic_expansion"
 
   # aliases for classes with long names
   TFPE = TruncatedFinitePadicExpansion

@@ -56,7 +56,7 @@ class TestTools < Minitest::Test
     moduli_two = [367, 331, 389, 433, 479, 449]
     remainders_two = [188, 234, 27, 214, 205, 183]
 
-    assert_equal 9024676, crt(moduli_one, remainders_one)
-    assert_equal 800155308225567, crt(moduli_two, remainders_two)
+    assert_equal 9_024_676, crt(moduli_one, remainders_one)
+    assert_equal 800_155_308_225_567, crt(moduli_two, remainders_two)
   end
 end

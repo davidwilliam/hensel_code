@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class TestPolynomial < Minitest::Test
+class TestPolynomialValidations < Minitest::Test
   include HenselCode::Tools
   include HenselCode::ModularArithmetic
 

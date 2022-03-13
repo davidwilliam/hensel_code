@@ -60,7 +60,7 @@ class TestTFPEArithmetic < Minitest::Test
     rat1, rat2 = Array.new(2) { @rationals.sample }
     h1 = HenselCode::TruncatedFinitePadicExpansion.new prime, exponent1, rat1
     h2 = HenselCode::TruncatedFinitePadicExpansion.new prime, exponent2, rat2
-    expected_error_message = "#{h1} has exponent #{h1.prime} while #{h2} has prime #{h2.prime}"
+    expected_error_message = "#{h1} has exponent #{h1.exponent} while #{h2} has exponent #{h2.exponent}"
 
     ["+", "-", "*", "/"].each do |operation|
       assert_raises(HenselCode::HenselCodesWithDifferentExponents, expected_error_message) { h1.send(operation, h2) }
