@@ -71,7 +71,7 @@ class TestFinitePadicExpansion < Minitest::Test
   def test_inverse
     prime = 257
     exponent = 4
-    h = HenselCode::FinitePadicExpansion.new prime, exponent, Rational(7,5)
+    h = HenselCode::FinitePadicExpansion.new prime, exponent, Rational(7, 5)
 
     assert_equal h.to_r**-1, h.inverse.to_r
     assert_equal 1, (h * h.inverse).to_r

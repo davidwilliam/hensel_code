@@ -38,7 +38,7 @@ class TestTruncatedFiniteGadicExpansion < Minitest::Test
   def test_to_s
     rational = @rationals.sample
     h = HenselCode::TruncatedFiniteGadicExpansion.new @primes, @exponent, rational
-    expected_to_s = "#{h.hensel_code.map(&:to_i)}"
+    expected_to_s = h.hensel_code.map(&:to_i).to_s
 
     assert_equal expected_to_s, h.to_s
   end
