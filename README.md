@@ -40,10 +40,11 @@ Or install it yourself as:
 
 # HenselCode
 
-There are several types of Hensel codes in the finite-segment p-adic number theory. There are currently two of them available in the gem HenselCode: 
+There are several types of Hensel codes in the finite-segment p-adic number theory. There are currently three of them available in the gem HenselCode: 
 
 1. Truncated finite-segment p-adic Hensel codes
 2. Finite-segment p-adic Hensel codes 
+3. Truncated finite-segment g-adic Hensel codes
 
 For each type of supported Hensel code I will briefly discuss their properties and capabilities as well as unique features that make each type of Hensel code distinct from each other.
 
@@ -499,6 +500,124 @@ h1_div_h2.to_r
 # => (14/33)
 rat1 / rat2
 # => (14/33)
+```
+
+## Truncated finite-segment g-adic Hensel codes
+### Description
+Kurt Mahler refers to p-adic numbers based on multiple distinct primes as `g-adic numbers` (Lectures on Diophantine Approximations, 1961 and Introduction to p-adic Numbers and Their Functions, 1973). John F. Morrison, 1988, remarks that `g` is the product of `k` distinct primes, which are used to generate a g-adic number with a unique g-adic representation. 
+
+### Unique Benefits
+
+Since each digit of a truncated finite-segment g-adic Expansion (or simply truncated g-adic Hensel codes) is independently computed with respect to their corresponding prime, we can carry computations on each digit also independetly. This makes the truncated g-adic Hensel codes ideal for parallel/distributed processing, that is, given a rational number, several g-adic digits of that rational are independently computed and computations can be carried on those digits, also indpendently. 
+
+### Usage
+
+Let `primes = [241, 251, 257]`, `r = 3`, `rat1 = Rational(2,3)`, and `rat2 = Rational(5,4)`:
+
+```ruby
+h1 = HenselCode::TruncatedFiniteGadicExpansion.new primes, r, rat1
+# => <HenselCode: [4665841, 10542168, 11316396]>
+h2 = HenselCode::TruncatedFiniteGadicExpansion.new primes, r, rat2
+# => <HenselCode: [10498142, 3953314, 12730946]>
+h1.primes
+# => [241, 251, 257]
+h1.exponent
+# => 3
+h1.g
+# => 15546187
+h1.n
+# => 43343186168
+h1.hensel_code
+# => [<HenselCode: 4665841>, <HenselCode: 10542168>, <HenselCode: 11316396>]
+h1.to_r
+# => (2/3)
+h2.to_r
+# => (5/4)
+```
+
+### Arithmetic
+
+We compute addition, subtraction, multiplication, and division as follows:
+
+```ruby
+h1_plus_h2 = h1 + h2
+# => <HenselCode: [1166462, 14495482, 7072749]>
+h1_minus_h2 = h1 - h2
+# => <HenselCode: [8165220, 6588854, 15560043]>
+h1_times_h2 = h1 * h2
+# => <HenselCode: [2332921, 13177710, 14145495]>
+h1_div_h2 = h1 / h2
+# => <HenselCode: [6532177, 2108434, 15842954]>
+h2.inverse
+# => <HenselCode: [2799505, 3162651, 6789838]>
+h1 * h2.inverse
+# => <HenselCode: [6532177, 2108434, 15842954]>
+h2 * h2.inverse
+# => <HenselCode: [1, 1, 1]>
+```
+
+And we can verify that
+
+```ruby
+h1_plus_h2.to_r
+# => (23/12)
+rat1 + rat2
+# => (23/12)
+rat1 - rat2
+# => (-7/12)
+h1_minus_h2.to_r
+# => (-7/12)
+h1_times_h2.to_r
+# => (5/6)
+rat1 * rat2
+# => (5/6)
+h1_div_h2.to_r
+# => (8/15)
+rat1 / rat2
+# => (8/15)
+```
+
+### Relatable, and yet, Unique
+
+When we execute the following:
+
+```ruby
+h1.hensel_code
+# => [<HenselCode: 4665841>, <HenselCode: 10542168>, <HenselCode: 11316396>]
+```
+
+it is clear that the truncated g-adic Hensel code is a collection of individual Hensel codes, each one computed for the same rational but with distinct primes. One can be tempted to think that these multiple independent Hensel codes are "extra" material, not really needed for representing the given rational. This is far from the truth. Besides enabling parallel/distributed computaitons over Hensel codes (which is already a great benefit to have), to illustrate another aspect of working with truncated g-adic Hensel codes, consider the rational `rat3 = Rational(37897,52234)`:
+
+```ruby
+h3 = HenselCode::TruncatedFiniteGadicExpansion.new primes, r, rat3
+# => <HenselCode: [3698890, 5577355, 7406440]>
+h3.hensel_code
+# => [<HenselCode: 3698890>, <HenselCode: 5577355>, <HenselCode: 7406440>]
+```
+
+We can clearly see that each Hensel code in the truncated g-adic Hensel code is only a partial representation of `rat3` when we decode each individual Hensel code to see which rational they are representing:
+
+```ruby
+h3.hensel_code.map(&:to_r)
+# => [(1471/4613), (409/981), (-207/3298)]
+```
+
+None of the above rationals equals `rat3`. The reason is that each individual prime in `primes` are insufficient for representing `rat3` and therefore they can only, individually, partially represent `rat3`. However, when considered as part of the same g-adic number system, they can jointly represent much larger rationals, yet independently:
+
+```ruby
+h3.to_r
+ => (37897/52234)
+```
+
+Therefore, even without increasing the size of each individual prime, we can homomorphically represent very large rationals by considering more primes in the g-adic system:
+
+```ruby
+rat4 = Rational(84245698732457344123,198437243845987593234524
+primes = [349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409]
+h4 = HenselCode::TruncatedFiniteGadicExpansion.new primes, r, rat4
+# => HenselCode: [16442637, 10524943, 2432723, 10742241, 37389750, 10164016, 7690494, 32341841, 26459590, 50463786, 28362831]>
+h4.to_r
+# => (84245698732457344123/198437243845987593234524)
 ```
 
 ### Class Aliases
