@@ -25,6 +25,13 @@ class TestTools < Minitest::Test
     assert_raises(HenselCode::BadBitRangeForRandomPrime, expected_error_message) { random_prime(1).bit_length }
   end
 
+  def test_random_distinct_integers
+    20.times do
+      integers = random_distinct_numbers("integer", 20, 8)
+      assert_equal integers, integers.uniq
+    end
+  end
+
   def test_eea_core
     assert_equal [1, 1, 3, 0, -22], eea_core(23, 22)
     assert_equal [9, 1, 3, 0, -8], eea_core(9, 72)

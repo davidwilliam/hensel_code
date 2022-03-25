@@ -40,7 +40,7 @@ module HenselCode
       numbers = [send("random_#{type}", bits)]
       while numbers.size < quantity
         number = send("random_#{type}", bits)
-        numbers << number if number != numbers.last
+        numbers << number unless numbers.include?(number)
       end
       numbers
     end
