@@ -1,10 +1,25 @@
 # frozen_string_literal: true
 
-require "simplecov"
-SimpleCov.start
+if ENV["COVERAGE"] == "on"
+  require "codecov"
+  require "simplecov"
+  require "simplecov-console"
 
-require "codecov"
-SimpleCov.formatter = SimpleCov::Formatter::Codecov
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
+    [
+      SimpleCov::Formatter::HTMLFormatter,
+      SimpleCov::Formatter::Console,
+      SimpleCov::Formatter::Codecov
+    ]
+  )
+
+  SimpleCov.start do
+    # TODO: fix test coverage
+    # minimum_coverage 100
+
+    add_filter "test"
+  end
+end
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "hensel_code"

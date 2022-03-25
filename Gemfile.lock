@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    hensel_code (0.3.0)
+    hensel_code (0.3.1)
       openssl (~> 3.0.0)
       prime (~> 0.1.2)
 
@@ -52,9 +52,15 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
+    simplecov-console (0.9.1)
+      ansi
+      simplecov
+      terminal-table
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
     singleton (0.1.1)
+    terminal-table (3.0.2)
+      unicode-display_width (>= 1.1.1, < 3)
     unicode-display_width (2.1.0)
 
 PLATFORMS
@@ -70,6 +76,7 @@ DEPENDENCIES
   rubocop (~> 1.21)
   rubocop-minitest (~> 0.17.2)
   rubocop-rake (~> 0.6)
+  simplecov-console (~> 0.9)
 
 BUNDLED WITH
    2.3.8

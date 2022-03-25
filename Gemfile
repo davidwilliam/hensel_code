@@ -18,3 +18,5 @@ gem "rubocop-rake", "~> 0.6"
 gem "minitest-reporters", "~> 1.5"
 
 gem "codecov", require: false, group: :test
+
+gem "simplecov-console", "~>0.9", require: false
