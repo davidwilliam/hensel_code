@@ -1,3 +1,6 @@
+## [0.3.1] - 2022-03-25
+- Fix the method `random_distinct_numbers` in `Tools` which was allowing duplicated random numbers.
+
 ## [0.3.0] - 2022-03-12
 
 - Add the `Polynomial` class for arithmetic with fixed-length polynomials
