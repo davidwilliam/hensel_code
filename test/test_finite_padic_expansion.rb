@@ -15,6 +15,20 @@ class TestFinitePadicExpansion < Minitest::Test
     @rat1, @rat2 = Array.new(2) { @rationals.sample }
   end
 
+  def test_valid_number
+    number1 = Rational(2, 3)
+    number2 = [2, 9, 17]
+    number3 = Complex(2, 7)
+    exponent = 3
+    h = HenselCode::FinitePadicExpansion.new @prime, exponent, number1
+
+    message = "number must be a Rational or an\
+        Array of integers of size #{exponent}"
+
+    assert_equal number2, HenselCode::FinitePadicExpansion.new(@prime, exponent, number2).to_a
+    assert_raises(HenselCode::WrongHenselCodeInputType, message) { h.send(:valid_number?, number3) }
+  end
+
   def test_create_hensel_code
     rational = @rationals.sample
     h = HenselCode::FinitePadicExpansion.new @prime, @exponent, rational
