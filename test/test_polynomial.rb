@@ -37,6 +37,20 @@ class TestPolynomial < Minitest::Test
     assert_equal 8, f2.degree
   end
 
+  def test_to_s
+    f = HenselCode::Polynomial.new @prime, [2, 3, 4]
+    expected_f_to_s = "2 + 3p + 4p^2"
+
+    assert_equal expected_f_to_s, f.to_s
+  end
+
+  def test_inspect
+    f = HenselCode::Polynomial.new @prime, [2, 3, 4]
+    expected_f_inspect = "<Polynomial: 2 + 3p + 4p^2>"
+
+    assert_equal expected_f_inspect, f.inspect
+  end
+
   def test_addition
     coefficients1 = random_distinct_numbers("integer", @exponent, 8)
     coefficients2 = random_distinct_numbers("integer", @exponent, 8)
