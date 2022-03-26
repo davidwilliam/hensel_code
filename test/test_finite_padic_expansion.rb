@@ -68,6 +68,15 @@ class TestFinitePadicExpansion < Minitest::Test
     assert_equal expected, h.inspect
   end
 
+  def test_to_truncated
+    prime = 257
+    exponent = 3
+    rational = Rational(2, 3)
+    h = HenselCode::FinitePadicExpansion.new prime, exponent, rational
+    expected_hensel_code = 11_316_396
+    assert_equal expected_hensel_code, h.to_truncated.hensel_code
+  end
+
   def test_inverse
     prime = 257
     exponent = 4
