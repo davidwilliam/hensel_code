@@ -38,8 +38,9 @@ module HenselCode
         @hensel_code = number
         decode
       else
-        raise WrongHenselCodeInputType, "number must be a Rational or an\
-                                        Array of truncated p-adic Hensel codes and it was a #{number.class}"
+        message = "number must be a Rational or an\
+        Array of truncated p-adic Hensel codes and it was a #{number.class}"
+        raise WrongHenselCodeInputType, message
       end
     end
 

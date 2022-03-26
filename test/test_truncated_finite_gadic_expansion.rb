@@ -35,6 +35,22 @@ class TestTruncatedFiniteGadicExpansion < Minitest::Test
     assert_equal rational, h2.to_r
   end
 
+  def test_valid_number
+    primes = [5, 11, 31]
+    exponent = 3
+    number2 = [2, 9, 17].map.with_index do |number, i|
+      HenselCode::TruncatedFinitePadicExpansion.new(primes[i], 1, number)
+    end
+
+    h = HenselCode::TruncatedFiniteGadicExpansion.new primes, exponent, Rational(2, 3)
+
+    message = "number must be a Rational or an\
+    Array of truncated p-adic Hensel codes and it was a Complex"
+
+    assert_equal number2.map(&:to_i), HenselCode::TruncatedFiniteGadicExpansion.new(primes, exponent, number2).to_a
+    assert_raises(HenselCode::WrongHenselCodeInputType, message) { h.send(:valid_number?, Complex(2, 7)) }
+  end
+
   def test_to_s
     rational = @rationals.sample
     h = HenselCode::TruncatedFiniteGadicExpansion.new @primes, @exponent, rational

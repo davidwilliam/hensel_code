@@ -23,7 +23,7 @@ class TestFinitePadicExpansion < Minitest::Test
     h = HenselCode::FinitePadicExpansion.new @prime, exponent, number1
 
     message = "number must be a Rational or an\
-        Array of integers of size #{exponent}"
+    Array of integers of size #{exponent}"
 
     assert_equal number2, HenselCode::FinitePadicExpansion.new(@prime, exponent, number2).to_a
     assert_raises(HenselCode::WrongHenselCodeInputType, message) { h.send(:valid_number?, number3) }
