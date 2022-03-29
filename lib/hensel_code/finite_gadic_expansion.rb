@@ -1,0 +1,66 @@
+# frozen_string_literal: true
+
+module HenselCode
+  # truncated finite g-adic expansion hensel code class
+  class FiniteGadicExpansion < GAdicBase
+    def modululi
+      primes.map { |prime| prime**exponent }
+    end
+
+    def to_a
+      hensel_code.map(&:to_a)
+    end
+
+    def to_s
+      hensel_code.map(&:to_s).to_s
+    end
+
+    def inspect
+      "<HenselCode: #{self}>"
+    end
+
+    def inverse
+      new_hensel_code = hensel_code.map(&:inverse)
+      self.class.new primes, exponent, new_hensel_code
+    end
+
+    private
+
+    def evaluate(operation, other)
+      new_hensel_code = hensel_code.zip(other.hensel_code).map { |pair| pair[0].send(operation, pair[1]) }
+      self.class.new primes, exponent, new_hensel_code
+    end
+
+    def valid_number?(number)
+      if number.is_a?(Rational)
+        @rational = number
+      elsif number.is_a?(Array) && number.map(&:class).uniq == [HenselCode::FinitePadicExpansion]
+        @hensel_code = number
+        decode
+      else
+        message = "number must be a Rational or an\
+        Array of finite p-adic Hensel codes and it was a #{number.class}"
+        raise WrongHenselCodeInputType, message
+      end
+    end
+
+    def valid_hensel_code?(new_hensel_code)
+      condition = new_hensel_code.is_a?(Array) && new_hensel_code.map(&:class).uniq == [HenselCode::FPE]
+      message = "must be an array of finite p-adic Hensel codes"
+      raise WrongHenselCodeInputType, message unless condition
+    end
+
+    def encode
+      @g = primes.inject(:*)
+      @hensel_code = primes.map do |prime|
+        FinitePadicExpansion.new prime, exponent, rational
+      end
+    end
+
+    def decode
+      hs = hensel_code.map { |h| h.to_truncated.hensel_code }
+      h = TruncatedFinitePadicExpansion.new g, exponent, crt(modululi, hs)
+      @rational = h.to_r
+    end
+  end
+end

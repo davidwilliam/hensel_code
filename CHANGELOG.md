@@ -1,3 +1,6 @@
+## [0.4.0] - 2022-03-29
+- Add the fourth type of supported Hensel code: the finite-segement g-adic Hensel code.
+
 ## [0.3.1] - 2022-03-25
 - Fix the method `random_distinct_numbers` in `Tools` which was allowing duplicated random numbers.
 

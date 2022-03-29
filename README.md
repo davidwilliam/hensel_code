@@ -2,7 +2,7 @@
 
 ![example workflow](https://github.com/davidwilliam/hensel_code/actions/workflows/main.yml/badge.svg) [![codecov](https://codecov.io/gh/davidwilliam/hensel_code/branch/main/graph/badge.svg?token=XJ0C0U7P2M)](https://codecov.io/gh/davidwilliam/hensel_code) [![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop) ![GitHub](https://img.shields.io/github/license/davidwilliam/hensel_code) ![Gem](https://img.shields.io/gem/v/hensel_code) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/davidwilliam/hensel_code)
 
-***NOTICE:*** this README is beign constantly updated. I am currently focused on coding since I want to release as many different types of Hensel codes as possible. At the same time, I want this README to be as informative as possible even for those completely unfamiliar with p-adic numbers and Hensel codes. Therefore, even not in the pace I would want, I will continue to add information to the README to facilitate the use of the gem and to give some practical ideas of the computational possibilities enabled by it.
+***NOTICE:*** this README is beign constantly updated. I am currently focused on coding since I want to release as many different types of Hensel codes and as many interesting features as time allows. At the same time, I want this README to be as informative as possible even for those completely unfamiliar with p-adic numbers and Hensel codes. 
 
 Hensel Code allows you to homomorphically encode rational numbers as integers using the finite-segment p-adic arithmetic, also known as Hensel codes. 
 
@@ -13,6 +13,12 @@ Rao also remarks that the theory of Hensel codes, although lifted from the p-adi
 Ç. K. Koç remarks that the p-adic arithmetic allows error-free representation of fractions and error-ree arithmetic using fractions where infinite-precision p-adic arithemtic is more suitable for software implementation and finite-precision p-adic arithmetic is more suitable for hardware implementations.
 
 A p-adic number can be uniquely written as a inifite p-adic expansion, for `p` prime, where the associated coefficients are integers between `0` and `p - 1`. When this p-adic expansion is finite in length, then we have a finite-segment p-adic expansion. When we only consider the constant term of a p-adic expansion, then we have a truncated finite-segment p-adic expansion. There many types of representations of rationals lifted from the p-adic number theory, and therefore many types of Hensel codes.
+
+## History
+
+The theory of p-adic numbers was introduced by Kurt Hensel in the early 1900's ([Theorie der algebraischen Zahlen](https://books.google.com/books?hl=en&lr=&id=0w3vAAAAMAAJ&oi=fnd&pg=PR3&dq=Theorie+der+algebraischen+Zahlen&ots=kQfsAd0GYZ&sig=dGsTggln9njYkc2zNYT5hkk2lXU#v=onepage&q=Theorie%20der%20algebraischen%20Zahlen&f=false)). Introductions to p-adic numbers are provided by George Bachman (Introduction to p-Adic Numbers and Valuation Theory), Neal Koblitz ([P-Adic Numbers, P-Adic Analysis, and Zeta Functions](https://books.google.com/books?hl=en&lr=&id=8sTgBwAAQBAJ&oi=fnd&pg=PA1&dq=P-Adic+Numbers,+P-Adic+Analysis,+and+Zeta+Functions&ots=fWIImSqW7-&sig=29LdWtpjSkmQ2kWvVFDmmG5SsOo#v=onepage&q=P-Adic%20Numbers%2C%20P-Adic%20Analysis%2C%20and%20Zeta%20Functions&f=false)), Kurt Mahler ([Introduction to p-adic numbers and their functions](https://books.google.com/books?hl=en&lr=&id=kbc8AAAAIAAJ&oi=fnd&pg=PA1&dq=Introduction+to+P-Adic+Numbers+and+Their+Functions&ots=GFpDeD8vMG&sig=TNSPVG0YA676rlflM9CfogQP7t8)), and Fernando Gouveia ([p-adic Number](https://books.google.com/books?hl=en&lr=&id=VWjsDwAAQBAJ&oi=fnd&pg=PR5&ots=MdgpeNTWLX&sig=9LzgTUkSzN76E1EOD7wna0c8S0I#v=onepage&q&f=false)).
+
+The foundation of the particular application of finite-segement p-adic arithemetic (also known as Hensel codes) for error-free computation can be found in the works of Alparslan, Krishnamurthy, Rao, and Subramanian (Finite p-adic number systems with possible applications, [Finite segmentp-adic number systems with applications to exact computation](https://link.springer.com/article/10.1007/BF03051174), [p-Adic arithmetic procedures for exact matrix computations](https://link.springer.com/article/10.1007/BF03046725), [Error-Free Polynomial Matrix Computations](https://link.springer.com/book/10.1007/978-1-4612-5118-7)), Gregory ([Methods and Applications of Error-Free Computation](https://link.springer.com/book/10.1007/978-1-4612-5242-9), [Error-free computation with rational numbers](https://link.springer.com/article/10.1007/BF01933164), [Error-free computation with finite number systems](https://dl.acm.org/doi/abs/10.1145/1057502.1057503?casa_token=LTLotJJYEPAAAAAA:PQwNY8-RcpuSQyfCkEMv1xIpd10RlR-y7JeTWkCkYNQ3c1IroGEGzk4TVH_5JJ954sJsvcHRlTldtQ), [The use of finite-segmentp-adic arithmetic for exact computation](https://link.springer.com/article/10.1007/BF01930898)), Miola ([Algebraic approach to p-adic conversion of rational numbers](https://www.sciencedirect.com/science/article/abs/pii/002001908490022X)), Morrison ([Parallel p-adic computation](https://www.sciencedirect.com/science/article/abs/pii/0020019088901597)). Many algorithms, ideas, and concepts in Hensel codes are greatly benefitted by the remarkable series The Art of Computer Programming by Donald Knuth. 
 
 ## Mathematical Background
 
@@ -45,6 +51,7 @@ There are several types of Hensel codes in the finite-segment p-adic number theo
 1. Truncated finite-segment p-adic Hensel codes
 2. Finite-segment p-adic Hensel codes 
 3. Truncated finite-segment g-adic Hensel codes
+4. Finite-segmenet g-adic Hensel codes
 
 For each type of supported Hensel code I will briefly discuss their properties and capabilities as well as unique features that make each type of Hensel code distinct from each other.
 
@@ -620,7 +627,75 @@ h4.to_r
 # => (84245698732457344123/198437243845987593234524)
 ```
 
-### Class Aliases
+## Finite-segment g-adic Hensel codes
+
+### Description
+The finite-segment g-adic Hensel codes are analogous to the relationship between truncated finite p-adic expansions and finite p-adic expansions. With the finite-segement g-adic Hensel codes, we have a collection of fixed-degree univariate polynomials for each one of `k` distinct primes used to compute a g-adic Hensel code. 
+
+### Unique Benefits
+
+Finite-segement g-adic Hensel codes combine the best of two worlds: multiple independent Hensel codes which can be computed in parallel / in a distributed manner and computations using fixed-degree polynomials where for each `b`-bit prime `p_i`, the maximum expansion of all computations will take at most `1 + 2b` bits. Combining parallel/distributed computation with minimal computation expansion can be beneficial for a number of applications including massive parallel computations and egde computing. 
+
+### Usage
+```ruby
+primes = [241, 251, 257]
+r = 3
+rat1 = Rational(2,3)
+rat2 = Rational(5,9)
+h1 = HenselCode::FiniteGadicExpansion.new primes, r, rat1
+# => <HenselCode: ["81 + 80p + 80p^2", "168 + 83p + 167p^2", "172 + 85p + 171p^2"]>
+h2 = HenselCode::FiniteGadicExpansion.new primes, r, rat2
+# => <HenselCode: ["188 + 26p + 107p^2", "140 + 111p + 139p^2", "229 + 199p + 142p^2"]>
+h1.to_r
+# => (2/3)
+h2.to_r
+# => (5/9)
+h1.to_a
+# => [[81, 80, 80], [168, 83, 167], [172, 85, 171]]
+h2.to_a
+# => [[188, 26, 107], [140, 111, 139], [229, 199, 142]]
+```
+
+### Arithmetic
+```ruby
+h1_plus_h2 = h1 + h2
+# => <HenselCode: ["28 + 107p + 187p^2", "57 + 195p + 55p^2", "144 + 28p + 57p^2"]>
+h1_minus_h2 = h1 - h2
+# => <HenselCode: ["134 + 53p + 214p^2", "28 + 223p + 27p^2", "200 + 142p + 28p^2"]>
+h1_times_h2 = h1 * h2
+# => <HenselCode: ["45 + 98p + 71p^2", "177 + 241p + 92p^2", "67 + 133p + 9p^2"]>
+h1_div_h2 = h1 / h2
+# => <HenselCode: ["194 + 192p + 192p^2", "202 + 200p + 200p^2", "104 + 51p + 154p^2"]>
+h2.inverse
+# => <HenselCode: ["50 + 48p + 48p^2", "52 + 50p + 50p^2", "156 + 205p + 102p^2"]>
+h1 * h2.inverse
+# => <HenselCode: ["194 + 192p + 192p^2", "202 + 200p + 200p^2", "104 + 51p + 154p^2"]>
+h2 * h2.inverse
+# => <HenselCode: ["1 + 0p + 0p^2", "1 + 0p + 0p^2", "1 + 0p + 0p^2"]>
+```
+
+and we can check that
+
+```ruby
+h1_plus_h2.to_r
+# => (11/9)
+rat1 + rat2
+# => (11/9)
+h1_minus_h2.to_r
+# => (1/9)
+rat1 - rat2
+# => (1/9)
+h1_times_h2.to_r
+# => (10/27)
+rat1 * rat2
+# => (10/27)
+h1_div_h2.to_r
+# => (6/5)
+rat1 / rat2
+# => (6/5)
+```
+
+## Class Aliases
 
 Since some classes can have long names, here are some aliases that can be used for keeping the lines of code shorter:
 
