@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = ["contact@davidwsilva.com"]
 
   spec.summary = "Error-free computation with homomorphic encoding of rational numbers."
-  spec.description = "A Ruby library for error-free computation via homomorphic encoding of rational numbers as integers."
+  spec.description = "A Ruby library for error-free computation via homomorphic encoding of rational numbers."
   spec.homepage = "https://github.com/davidwilliam/hensel_code"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
